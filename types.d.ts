@@ -1,6 +1,8 @@
 import React from 'react';
 
-declare module 'temp/pages/*.js' {
-  const Page: React.FC;
-  export default Page;
+import { DocumentProps } from 'src/pages/_document';
+
+declare module 'temp/pages/_document.js' {
+  const Document: React.FC<DocumentProps>;
+  export default Document;
 }
