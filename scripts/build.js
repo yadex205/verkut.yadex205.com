@@ -1,17 +1,39 @@
 import { promises as fsPromises } from 'fs';
 import path from 'path';
+import { pathToFileURL, fileURLToPath } from 'url';
 
-import esbuild from 'esbuild';
+import * as esbuild from 'esbuild';
 import * as React from 'react';
 import { renderToStaticMarkup, renderToString } from 'react-dom/server';
 
 const pageSourcePaths = ['src/pages/index.tsx'];
 
+/** @type esbuild.Plugin */
+const externalizeNodeModulesPlugin = {
+  name: 'ExternalizeNodeModulesPlugin',
+  setup: (build) => {
+    build.onResolve({ filter: /^[^~].*/ }, async (args) => {
+      const resolveDirUrl = pathToFileURL(args.resolveDir + '/');
+      const dummyParentUrl = new URL('./dummy-parent.js', resolveDirUrl.href);
+      const resolvedUrl = await import.meta.resolve(args.path, dummyParentUrl.href);
+      const resolvedPath = fileURLToPath(resolvedUrl);
+
+      if (resolvedPath.includes('node_modules')) {
+        return { path: args.path, external: true };
+      }
+
+      return { path: resolvedPath };
+    });
+  },
+};
+
 const main = async () => {
   await esbuild.build({
     entryPoints: ['src/pages/_app.tsx'],
     outfile: 'temp/pages/_app.js',
-    bundle: false,
+    bundle: true,
+    format: 'esm',
+    plugins: [externalizeNodeModulesPlugin],
   });
   /** @type typeof import('../src/pages/_app').default */
   const AppComponent = (await import('../temp/pages/_app.js')).default;
@@ -19,7 +41,9 @@ const main = async () => {
   await esbuild.build({
     entryPoints: ['src/pages/_document.tsx'],
     outfile: 'temp/pages/_document.js',
-    bundle: false,
+    bundle: true,
+    format: 'esm',
+    plugins: [externalizeNodeModulesPlugin],
   });
   /** @type typeof import('../src/pages/_document').default */
   const DocumentComponent = (await import('../temp/pages/_document.js')).default;
@@ -31,7 +55,9 @@ const main = async () => {
     await esbuild.build({
       entryPoints: [pageSourcePath],
       outfile: tempPath,
-      bundle: false,
+      bundle: true,
+      format: 'esm',
+      plugins: [externalizeNodeModulesPlugin],
     });
     const PageComponent = (await import(path.resolve(tempPath))).default;
     /** @type import('react-helmet-async').FilledContext */

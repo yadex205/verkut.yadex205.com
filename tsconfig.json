@@ -17,7 +17,8 @@
     "incremental": true,
     "baseUrl": ".",
     "paths": {
-      "pages/*": ["./src/pages/*"]
+      "~components/*": ["./src/components/*"],
+      "~pages/*": ["./src/pages/*"]
     }
   },
   "include": ["**/*.ts", "**/*.tsx"],

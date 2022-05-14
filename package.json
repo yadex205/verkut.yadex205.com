@@ -15,7 +15,7 @@
   "private": true,
   "type": "module",
   "scripts": {
-    "build": "node scripts/build.js"
+    "build": "node --experimental-import-meta-resolve scripts/build.js"
   },
   "devDependencies": {
     "@types/node": "^17.0.33",
