@@ -8,6 +8,11 @@ import { renderToStaticMarkup, renderToString } from 'react-dom/server';
 
 const pageSourcePaths = ['src/pages/index.tsx'];
 
+/** @type esbuild.CommonOptions.define */
+const env = {
+  'process.env.CANONICAL_URL_ORIGIN': JSON.stringify('https://www.yadex205.info'),
+};
+
 /** @type esbuild.Plugin */
 const externalizeNodeModulesPlugin = {
   name: 'ExternalizeNodeModulesPlugin',
@@ -34,6 +39,7 @@ const main = async () => {
     bundle: true,
     format: 'esm',
     plugins: [externalizeNodeModulesPlugin],
+    define: env,
   });
   /** @type typeof import('../src/pages/_app').default */
   const AppComponent = (await import('../temp/pages/_app.js')).default;
@@ -44,6 +50,7 @@ const main = async () => {
     bundle: true,
     format: 'esm',
     plugins: [externalizeNodeModulesPlugin],
+    define: env,
   });
   /** @type typeof import('../src/pages/_document').default */
   const DocumentComponent = (await import('../temp/pages/_document.js')).default;
@@ -58,6 +65,7 @@ const main = async () => {
       bundle: true,
       format: 'esm',
       plugins: [externalizeNodeModulesPlugin],
+      define: env,
     });
     const PageComponent = (await import(path.resolve(tempPath))).default;
     /** @type import('react-helmet-async').FilledContext */

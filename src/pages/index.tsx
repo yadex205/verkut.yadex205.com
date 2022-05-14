@@ -1,12 +1,11 @@
 import React from 'react';
-import { Helmet } from 'react-helmet-async';
+
+import { Meta } from '~components/meta';
 
 const Page: React.FC = () => {
   return (
     <div>
-      <Helmet>
-        <title>Yadex205</title>
-      </Helmet>
+      <Meta title="Yadex205" description="HTML Shoppe. Amateur VJ." canonicalPath="/" />
       index.html
     </div>
   );
