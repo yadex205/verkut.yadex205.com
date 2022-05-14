@@ -14,6 +14,7 @@ const Document: React.FC<DocumentProps> = ({ htmlAttributes, headFragment, pageB
     </head>
     <body>
       <div id="space" dangerouslySetInnerHTML={{ __html: pageBody }} />
+      <script src="/main.js" />
     </body>
   </html>
 );

@@ -6,11 +6,12 @@ import * as esbuild from 'esbuild';
 import * as React from 'react';
 import { renderToStaticMarkup, renderToString } from 'react-dom/server';
 
-const pageSourcePaths = ['src/pages/index.tsx'];
+const pageSourcePaths = ['src/pages/index.tsx', 'src/pages/about/index.tsx'];
 
 /** @type esbuild.CommonOptions.define */
 const env = {
   'process.env.CANONICAL_URL_ORIGIN': JSON.stringify('https://www.yadex205.info'),
+  'process.env.NODE_ENV': JSON.stringify('development'),
 };
 
 /** @type esbuild.Plugin */
@@ -34,6 +35,14 @@ const externalizeNodeModulesPlugin = {
 
 const main = async () => {
   await esbuild.build({
+    entryPoints: ['src/main.tsx'],
+    outfile: 'build/main.js',
+    bundle: true,
+    format: 'iife',
+    define: env,
+  });
+
+  await esbuild.build({
     entryPoints: ['src/pages/_app.tsx'],
     outfile: 'temp/pages/_app.js',
     bundle: true,
@@ -41,8 +50,8 @@ const main = async () => {
     plugins: [externalizeNodeModulesPlugin],
     define: env,
   });
-  /** @type typeof import('../src/pages/_app').default */
-  const AppComponent = (await import('../temp/pages/_app.js')).default;
+  /** @type typeof import('../src/pages/_app').ServerApp */
+  const AppComponent = (await import('../temp/pages/_app.js')).ServerApp;
 
   await esbuild.build({
     entryPoints: ['src/pages/_document.tsx'],
