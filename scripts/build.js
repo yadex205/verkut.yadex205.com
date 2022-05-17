@@ -6,12 +6,13 @@ import * as esbuild from 'esbuild';
 import * as React from 'react';
 import { renderToStaticMarkup, renderToString } from 'react-dom/server';
 
+const NODE_ENV = process.env.NODE_ENV || 'development';
 const pageSourcePaths = ['src/pages/index.tsx', 'src/pages/about/index.tsx'];
 
 /** @type esbuild.CommonOptions.define */
 const env = {
   'process.env.CANONICAL_URL_ORIGIN': JSON.stringify('https://www.yadex205.info'),
-  'process.env.NODE_ENV': JSON.stringify('development'),
+  'process.env.NODE_ENV': JSON.stringify(NODE_ENV),
 };
 
 /** @type esbuild.Plugin */
@@ -37,6 +38,7 @@ const main = async () => {
   await esbuild.build({
     entryPoints: ['src/main.tsx'],
     outfile: 'build/main.js',
+    minify: NODE_ENV === 'production',
     bundle: true,
     format: 'iife',
     define: env,
@@ -46,6 +48,7 @@ const main = async () => {
     entryPoints: ['src/pages/_app.tsx'],
     outfile: 'temp/pages/_app.js',
     bundle: true,
+    minify: NODE_ENV === 'production',
     format: 'esm',
     plugins: [externalizeNodeModulesPlugin],
     define: env,
@@ -57,6 +60,7 @@ const main = async () => {
     entryPoints: ['src/pages/_document.tsx'],
     outfile: 'temp/pages/_document.js',
     bundle: true,
+    minify: NODE_ENV === 'production',
     format: 'esm',
     plugins: [externalizeNodeModulesPlugin],
     define: env,
