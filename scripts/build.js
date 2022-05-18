@@ -1,10 +1,11 @@
 import { promises as fsPromises } from 'fs';
 import path from 'path';
-import { pathToFileURL, fileURLToPath } from 'url';
 
 import * as esbuild from 'esbuild';
 import * as React from 'react';
 import { renderToStaticMarkup, renderToString } from 'react-dom/server';
+
+import { externalizeNodeModulesPlugin } from './libs/esbuild-plugins.js';
 
 const NODE_ENV = process.env.NODE_ENV || 'development';
 const pageSourcePaths = ['src/pages/index.tsx', 'src/pages/about/index.tsx'];
@@ -13,25 +14,6 @@ const pageSourcePaths = ['src/pages/index.tsx', 'src/pages/about/index.tsx'];
 const env = {
   'process.env.CANONICAL_URL_ORIGIN': JSON.stringify('https://www.yadex205.info'),
   'process.env.NODE_ENV': JSON.stringify(NODE_ENV),
-};
-
-/** @type esbuild.Plugin */
-const externalizeNodeModulesPlugin = {
-  name: 'ExternalizeNodeModulesPlugin',
-  setup: (build) => {
-    build.onResolve({ filter: /^[^~].*/ }, async (args) => {
-      const resolveDirUrl = pathToFileURL(args.resolveDir + '/');
-      const dummyParentUrl = new URL('./dummy-parent.js', resolveDirUrl.href);
-      const resolvedUrl = await import.meta.resolve(args.path, dummyParentUrl.href);
-      const resolvedPath = fileURLToPath(resolvedUrl);
-
-      if (resolvedPath.includes('node_modules')) {
-        return { path: args.path, external: true };
-      }
-
-      return { path: resolvedPath };
-    });
-  },
 };
 
 const main = async () => {

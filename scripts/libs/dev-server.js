@@ -1,4 +1,5 @@
 import * as crypto from 'crypto';
+import * as fs from 'fs';
 import * as path from 'path';
 
 import fastifyFactory from 'fastify';
@@ -6,6 +7,8 @@ import fastifyWebSocket from '@fastify/websocket';
 import * as mime from 'mime-types';
 
 import { logger } from './logger.js';
+
+const devServerClientJsContents = fs.readFileSync('scripts/libs/dev-server-client.js');
 
 export class DevServer {
   #server = fastifyFactory();
@@ -15,6 +18,9 @@ export class DevServer {
   #files = new Map();
   /** @type Map<string, string> */
   #digests = new Map();
+  /** @type string[] */
+  #updatedFiles = [];
+  #reloadTimer = 0;
 
   constructor() {
     const fastify = this.#server;
@@ -25,7 +31,7 @@ export class DevServer {
     });
 
     fastify.get('/__dev-server-client.js', (_req, res) => {
-      res.code(200).type('text/javascript').send('// noop');
+      res.code(200).type('text/javascript').send(devServerClientJsContents);
     });
 
     fastify.get('/__websocket', { websocket: true }, ({ socket: ws }, req) => {
@@ -54,7 +60,7 @@ export class DevServer {
         res
           .code(200)
           .headers({ 'Content-Type': mime.contentType(path.extname(candidatePathname)) || 'application/octet-stream' })
-          .send(contents);
+          .send(Buffer.from(contents));
         return;
       }
 
@@ -73,11 +79,8 @@ export class DevServer {
     });
   };
 
-  /** @param {{ contents: Uint8array; pathname: string }[]} files */
+  /** @param {{ contents: Uint8array | string; pathname: string }[]} files */
   pushFiles = (files) => {
-    /** @type string[] */
-    const updateTargets = [];
-
     files.forEach((file) => {
       const hash = crypto.createHash('md5');
       const prevDigest = this.#digests.get(file.pathname);
@@ -85,18 +88,25 @@ export class DevServer {
 
       if (prevDigest !== nextDigest) {
         this.#files.set(file.pathname, file.contents);
-        updateTargets.push(file.pathname);
+        this.#updatedFiles.push(file.pathname);
         this.#digests.set(file.pathname, nextDigest);
       }
     });
 
-    const updateEvent = {
+    clearTimeout(this.#reloadTimer);
+    this.#reloadTimer = setTimeout(() => {
+      this.#reload();
+    }, 500);
+  };
+
+  #reload = () => {
+    this.#sendEventToClient({
       createdAt: Date.now(),
       event: 'update',
-      targets: updateTargets,
-    };
+      targets: this.#updatedFiles,
+    });
 
-    this.#sendEventToClient(updateEvent);
+    this.updatedFiles = [];
   };
 
   /** @param {unknown} event */
