@@ -12,7 +12,7 @@ export interface AppProps {
 const App: React.FC<AppProps> = ({ children }) => (
   <World>
     <Helmet>
-      <html lang="ja" />
+      <html lang="en" />
     </Helmet>
     {children}
   </World>
