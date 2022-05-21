@@ -63,6 +63,30 @@ class Develop {
     });
 
     /** @type esbuild.Plugin */
+    const mainStyleBuilderPlugin = {
+      name: 'MainStyleBuilderPlugin',
+      setup: (build) => {
+        build.onEnd((result) => {
+          const file = result.outputFiles[0];
+          if (file) {
+            this.#devServer.pushFiles([{ contents: file.contents, pathname: '/main.css' }]);
+          }
+        });
+      },
+    };
+
+    await esbuild.build({
+      entryPoints: ['src/styles/main.css'],
+      outfile: 'build/main.css',
+      minify: NODE_ENV === 'production',
+      bundle: true,
+      watch: true,
+      incremental: true,
+      write: false,
+      plugins: [mainStyleBuilderPlugin],
+    });
+
+    /** @type esbuild.Plugin */
     const documentBuilderPlugin = {
       name: 'DocumentBuilderPlugin',
       setup: (build) => {

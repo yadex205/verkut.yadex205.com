@@ -1,0 +1,16 @@
+/**
+ * Variables
+ */
+:root {
+  --color-black: #303030;
+  --color-white: #fafafa;
+}
+
+/**
+ * Reset
+ */
+body {
+  margin: 0;
+  background-color: var(--color-black);
+  color: var(--color-white);
+}

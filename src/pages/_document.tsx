@@ -11,6 +11,7 @@ const Document: React.FC<DocumentProps> = ({ htmlAttributes, headFragment, pageB
     <head>
       <meta charSet="utf-8" />
       {headFragment}
+      <link rel="stylesheet" href="/main.css" />
       {process.env.DEV_SERVER && <script src="/__dev-server-client.js" />}
     </head>
     <body>
