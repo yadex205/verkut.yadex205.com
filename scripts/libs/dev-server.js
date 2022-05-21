@@ -70,7 +70,7 @@ export class DevServer {
 
   start = () => {
     const fastify = this.#server;
-    fastify.listen(3000, (error, address) => {
+    fastify.listen(3000, '0.0.0.0', (error, address) => {
       if (error) {
         throw error;
       }
