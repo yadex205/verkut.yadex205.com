@@ -6,8 +6,7 @@ import { Meta } from '~components/meta';
 const Page: React.FC = () => {
   return (
     <div>
-      <Meta title="Yadex205" description="HTML Shoppe. Amateur VJ." canonicalPath="/" />
-      <Link to="/about/">about</Link>
+      <Meta title="VERKUT" description="Glitch playground on the Web." canonicalPath="/" />
       index.html
     </div>
   );
