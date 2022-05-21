@@ -1,17 +1,17 @@
 {
-  "name": "www.yadex205.com",
+  "name": "verkut.yadex205.com",
   "version": "0.0.0",
-  "description": "The source for https://www.yadex205.info",
+  "description": "The source for https://verkut.yadex205.info",
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/yadex205/www.yadex205.com.git"
+    "url": "git+https://github.com/yadex205/verkut.yadex205.com.git"
   },
   "author": "Kanon Kakuno <https://twitter.com/yadex205_vj>",
   "license": "MIT",
   "bugs": {
-    "url": "https://github.com/yadex205/www.yadex205.com/issues"
+    "url": "https://github.com/yadex205/verkut.yadex205.com/issues"
   },
-  "homepage": "https://github.com/yadex205/www.yadex205.com#readme",
+  "homepage": "https://github.com/yadex205/verkut.yadex205.com#readme",
   "private": true,
   "type": "module",
   "scripts": {

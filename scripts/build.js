@@ -12,7 +12,7 @@ const pageSourcePaths = ['src/pages/index.tsx', 'src/pages/about/index.tsx'];
 
 /** @type esbuild.CommonOptions.define */
 const env = {
-  'process.env.CANONICAL_URL_ORIGIN': JSON.stringify('https://www.yadex205.info'),
+  'process.env.CANONICAL_URL_ORIGIN': JSON.stringify('https://verkut.yadex205.info'),
   'process.env.NODE_ENV': JSON.stringify(NODE_ENV),
 };
 

@@ -10,7 +10,7 @@ const NODE_ENV = process.env.NODE_ENV || 'development';
 
 /** @type esbuild.CommonOptions.define */
 const env = {
-  'process.env.CANONICAL_URL_ORIGIN': JSON.stringify('https://www.yadex205.info'),
+  'process.env.CANONICAL_URL_ORIGIN': JSON.stringify('https://verkut.yadex205.info'),
   'process.env.NODE_ENV': JSON.stringify(NODE_ENV),
   'process.env.DEV_SERVER': JSON.stringify('true'),
 };

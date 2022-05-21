@@ -1,9 +1,7 @@
 import React from 'react';
 
 const Page: React.FC = () => {
-  return (
-    <div>verkut</div>
-  )
-}
+  return <div></div>;
+};
 
 export default Page;
