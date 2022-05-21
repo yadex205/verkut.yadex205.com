@@ -1,0 +1,11 @@
+.verkut__mixer-area {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  grid-column-gap: 8px;
+}
+
+.verkut__output-preview {
+  width: 100%;
+  aspect-ratio: 16 / 9;
+  background-color: var(--color-real-black);
+}

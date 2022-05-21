@@ -1,5 +1,7 @@
 body {
   margin: 0;
   background-color: var(--color-black);
+  font-size: 15px;
+  font-family: 'Noto Sans JP';
   color: var(--color-white);
 }

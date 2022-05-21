@@ -1,0 +1,11 @@
+.verkut-window {
+  border: 2px solid var(--color-orange);
+  border-top: 0;
+}
+
+.verkut-window__header {
+  padding: 6px 8px;
+  background-color: var(--color-orange);
+  color: var(--color-black);
+  font-size: 0.8rem;
+}

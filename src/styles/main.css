@@ -1,3 +1,6 @@
+@import url('https://fonts.googleapis.com/css2?family=Noto+Sans+JP&display=swap');
 @import './variables.css';
 @import './base.css';
+@import '~components/verkut/style.css';
 @import '~components/verkut-layer-controllers-list/style.css';
+@import '~components/verkut-window/style.css';

@@ -1,5 +1,7 @@
 import React from 'react';
 
+import { VerkutWindow } from '~components/verkut-window';
+
 export interface VerkutLayerControllersListProps {
   children?: React.ReactNode;
 }
@@ -16,12 +18,13 @@ export const VerkutLayerControllersListItem: React.FC<VerkutLayerControllersList
   label = 'No name',
 }) => (
   <li className="verkut-layer-controllers-list__item">
-    <div className="verkut-layer-controllers-list__item__header">{label}</div>
-    <div className="verkut-layer-controllers-list__item__body">
-      <canvas className="verkut-layer-controllers-list__item__preview-area" />
-      <div className="verkut-layer-controllers-list__item__status-area">
-        <div className="verkut-layer-controllers-list__item__material-name">Material Name</div>
+    <VerkutWindow title={label}>
+      <div className="verkut-layer-controllers-list__item__body">
+        <canvas className="verkut-layer-controllers-list__item__preview-area" />
+        <div className="verkut-layer-controllers-list__item__status-area">
+          <div className="verkut-layer-controllers-list__item__material-name">Material Name</div>
+        </div>
       </div>
-    </div>
+    </VerkutWindow>
   </li>
 );
