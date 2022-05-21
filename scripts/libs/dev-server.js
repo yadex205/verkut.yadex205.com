@@ -1,6 +1,7 @@
 import * as crypto from 'crypto';
 import * as fs from 'fs';
 import * as path from 'path';
+import { fileURLToPath } from 'url';
 
 import fastifyFactory from 'fastify';
 import fastifyWebSocket from '@fastify/websocket';
@@ -8,6 +9,7 @@ import * as mime from 'mime-types';
 
 import { logger } from './logger.js';
 
+const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const devServerClientJsContents = fs.readFileSync('scripts/libs/dev-server-client.js');
 
 export class DevServer {
@@ -47,7 +49,7 @@ export class DevServer {
       });
     });
 
-    fastify.get('/*', (req, res) => {
+    fastify.get('/*', async (req, res) => {
       const requestedPathname = new URL(req.url || '', `http://${req.headers.host}`).pathname;
       const candidatePathnames = [requestedPathname, path.join(requestedPathname, 'index.html')];
 
@@ -62,6 +64,22 @@ export class DevServer {
           .headers({ 'Content-Type': mime.contentType(path.extname(candidatePathname)) || 'application/octet-stream' })
           .send(Buffer.from(contents));
         return;
+      }
+
+      const publicAssetFilePath = path.join(__dirname, '../../src/public', requestedPathname.replace(/^\//, ''));
+      try {
+        await fs.promises.stat(publicAssetFilePath); // To throw error if not found
+
+        const contentsReadableStream = fs.createReadStream(publicAssetFilePath);
+        res
+          .code(200)
+          .headers({
+            'Content-Type': mime.contentType(path.extname(publicAssetFilePath)) || 'application/octet-stream',
+          })
+          .send(contentsReadableStream);
+        return;
+      } catch (e) {
+        // noop
       }
 
       res.callNotFound();
